@@ -90,7 +90,7 @@ async def private_receive_handler(c: Client, m: Message):
 async def handle_not_subscribed(client, message):
     buttons = [
         [
-            InlineKeyboardButton("Join Channel", url=f"https://t.me/{FORCE_SUB_CHANNEL}")
+            InlineKeyboardButton("Join Channel", url=f"https://t.me/hermitmd_official")
         ]
     ]
     text = "**Please join our channel to use this bot!**\n\nClick the button below to join:"
