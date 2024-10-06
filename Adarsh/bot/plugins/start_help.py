@@ -35,8 +35,7 @@ For assistance, please type /help.
 Feel free to send me any video or file to explore my features!
             """,
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official")],
-                [InlineKeyboardButton("Owner", url="https://t.me/a_dithya_n")]
+                [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official"), InlineKeyboardButton("Owner", url="https://t.me/a_dithya_n")]
             ])
         )
     else:
@@ -47,14 +46,10 @@ Feel free to send me any video or file to explore my features!
             
             stream_link = get_stream_link(file_id)
             
-            msg_text = f"""Your link is generated...
-
-File Name: {file_info['name']}
+            msg_text = f"""File Name: {file_info['name']}
 File Size: {file_info['size']}
 
 Download Link: {stream_link}
-
-This link is permanent and won't expire.
             """
             await message.reply_text(
                 text=msg_text,
