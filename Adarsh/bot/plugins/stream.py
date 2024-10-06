@@ -97,7 +97,7 @@ async def process_file(c: Client, m: Message):
 async def handle_not_subscribed(client, message):
     buttons = [
         [
-            InlineKeyboardButton("Join Channel", url=f"https://t.me/{FORCE_SUB_CHANNEL}")
+            InlineKeyboardButton("Join Channel", url=f"https://t.me/hermitmd_official")
         ],
         [
             InlineKeyboardButton("Try Now", callback_data=f"try_now_{message.id}")
