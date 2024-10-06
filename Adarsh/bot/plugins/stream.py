@@ -35,15 +35,12 @@ async def private_receive_handler(c: Client, m: Message):
         stream_link = f"{Var.URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
         online_link = f"{Var.URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
        
-        msg_text = """\
-<i><u>Your Link Generated!</u></i>
+        msg_text = """
+<b>File Name:</b> <i>{}</i>
+<b>File Size:</b> <i>{}</i>
 
-<b>📂 File Name:</b> <i>{}</i>  
-<b>📦 File Size:</b> <i>{}</i>  
-<b>📥 Download:</b> <i>{}</i>  
-<b>🖥 Watch:</b> <i>{}</i>  
-
-<b>🚸 Note: This link won't expire until deleted.</b>
+<b>Download:</b> <i>{}</i>
+<b>Watch:</b> <i>{}</i>
 """
 
 
