@@ -35,7 +35,7 @@ For assistance, please type /help.
 Feel free to send me any video or file to explore my features!
             """,
             reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official"), InlineKeyboardButton("Owner", url="https://t.me/a_dithya_n")]
+                [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official")]
             ])
         )
     else:
@@ -82,7 +82,7 @@ For more information, type /about.
     await message.reply_text(
         text=help_text,
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official"), InlineKeyboardButton("Owner", url="https://t.me/a_dithya_n")],
+            [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official")],
         ])
     )
 
@@ -105,7 +105,7 @@ Language: Python 3
     await message.reply_text(
     text=about_text,
     reply_markup=InlineKeyboardMarkup([
-        [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official"), InlineKeyboardButton("Owner", url="https://t.me/a_dithya_n")],
+        [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official")],
     ])
     )
 
