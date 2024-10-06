@@ -10,20 +10,22 @@ import aiohttp
 
 
 async def render_page(id, secure_hash):
-    file_data = await get_file_ids(StreamBot, int(Var.BIN_CHANNEL), int(id))
+    file_data=await get_file_ids(StreamBot, int(Var.BIN_CHANNEL), int(id))
     if file_data.unique_id[:6] != secure_hash:
         logging.debug(f'link hash: {secure_hash} - {file_data.unique_id[:6]}')
         logging.debug(f"Invalid hash for message with - ID {id}")
         raise InvalidHash
     src = urllib.parse.urljoin(Var.URL, f'{secure_hash}{str(id)}')
-    if str(file_data.mime_type.split('/')[0].strip()) in ['video', 'audio']:
+    if str(file_data.mime_type.split('/')[0].strip()) == 'video':
         async with aiofiles.open('Adarsh/template/req.html') as r:
-            heading = 'Watch {}' if file_data.mime_type.split('/')[0].strip() == 'video' else 'Listen {}'
-            heading = heading.format(file_data.file_name)
+            heading = 'Watch {}'.format(file_data.file_name)
             tag = file_data.mime_type.split('/')[0].strip()
-            html = await r.read()
-            html = html % (heading, file_data.file_name, src)
-            html = html.replace('tag', tag)
+            html = (await r.read()).replace('tag', tag) % (heading, file_data.file_name, src)
+    elif str(file_data.mime_type.split('/')[0].strip()) == 'audio':
+        async with aiofiles.open('Adarsh/template/req.html') as r:
+            heading = 'Listen {}'.format(file_data.file_name)
+            tag = file_data.mime_type.split('/')[0].strip()
+            html = (await r.read()).replace('tag', tag) % (heading, file_data.file_name, src)
     else:
         async with aiofiles.open('Adarsh/template/dl.html') as r:
             async with aiohttp.ClientSession() as s:
