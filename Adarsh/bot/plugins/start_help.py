@@ -87,8 +87,7 @@ For more information, type /about.
     await message.reply_text(
         text=help_text,
         reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official")],
-            [InlineKeyboardButton("Owner", url="https://t.me/a_dithya_n")]
+            [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official"), InlineKeyboardButton("Owner", url="https://t.me/a_dithya_n")],
         ])
     )
 
