@@ -114,11 +114,17 @@ async def handle_not_subscribed(client, message):
 @StreamBot.on_callback_query(filters.regex('^try_now_'))
 async def try_now_callback(client: Client, callback_query: CallbackQuery):
     message_id = int(callback_query.data.split('_')[2])
-    message = await client.get_messages(callback_query.message.chat.id, message_id)
+    original_message = await client.get_messages(callback_query.message.chat.id, message_id)
     
     if await is_subscribed(None, client, callback_query):
+        try:
+            # Delete the message with "Join Channel" and "Try Now" buttons
+            await callback_query.message.delete()
+        except Exception as e:
+            print(f"Error deleting message: {e}")
+        
         await callback_query.answer("Great! You've joined the channel. Processing your file now.", show_alert=True)
-        await process_file(client, message)
+        await process_file(client, original_message)
     else:
         await callback_query.answer("You haven't joined the channel yet. Please join and try again.", show_alert=True)
 
