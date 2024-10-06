@@ -9,8 +9,7 @@ from Adarsh.vars import Var
 from urllib.parse import quote_plus
 from pyrogram import filters, Client
 from pyrogram.errors import FloodWait, UserNotParticipant
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-from pyrogram.enums import ChatMemberStatus
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, ChatMemberStatus, CallbackQuery
 
 from Adarsh.utils.file_properties import get_name, get_hash, get_media_file_size
 db = Database(Var.DATABASE_URL, Var.name)
@@ -19,9 +18,11 @@ MY_PASS = os.environ.get("MY_PASS", None)
 pass_dict = {}
 pass_db = Database(Var.DATABASE_URL, "ag_passwords")
 
+# New variables
 FORCE_SUB_CHANNEL = os.environ.get("FORCE_SUB_CHANNEL", None)
 ADMINS = list(map(int, os.environ.get("ADMINS", "").split()))
 
+# New function for subscription check
 async def is_subscribed(filter, client, update):
     if not FORCE_SUB_CHANNEL:
         return True
@@ -38,6 +39,7 @@ async def is_subscribed(filter, client, update):
     else:
         return True
 
+# Create the subscribed filter
 subscribed = filters.create(is_subscribed)
 
 @StreamBot.on_message((filters.private) & (filters.document | filters.video | filters.audio | filters.photo))
@@ -53,6 +55,9 @@ async def private_receive_handler(c: Client, m: Message):
         await handle_not_subscribed(c, m)
         return
     
+    await process_file(c, m)
+
+async def process_file(c: Client, m: Message):
     try:
         log_msg = await m.forward(chat_id=Var.BIN_CHANNEL)
         stream_link = f"{Var.URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
@@ -91,16 +96,30 @@ async def private_receive_handler(c: Client, m: Message):
 async def handle_not_subscribed(client, message):
     buttons = [
         [
-            InlineKeyboardButton("Join Channel", url=f"https://t.me/hermitmd_official")
+            InlineKeyboardButton("Join Channel", url=f"https://t.me/{FORCE_SUB_CHANNEL}")
+        ],
+        [
+            InlineKeyboardButton("Try Now", callback_data=f"try_now_{message.id}")
         ]
     ]
-    text = "**Please join our channel to use this bot!**\n\nClick the button below to join:"
+    text = "**Please join our channel to use this bot!**\n\nClick the button below to join, then click 'Try Now':"
     await message.reply_text(
         text=text,
         reply_markup=InlineKeyboardMarkup(buttons),
         quote=True,
         disable_web_page_preview=True
     )
+
+@StreamBot.on_callback_query(filters.regex('^try_now_'))
+async def try_now_callback(client: Client, callback_query: CallbackQuery):
+    message_id = int(callback_query.data.split('_')[2])
+    message = await client.get_messages(callback_query.message.chat.id, message_id)
+    
+    if await is_subscribed(None, client, callback_query):
+        await callback_query.answer("Great! You've joined the channel. Processing your file now.", show_alert=True)
+        await process_file(client, message)
+    else:
+        await callback_query.answer("You haven't joined the channel yet. Please join and try again.", show_alert=True)
 
 
 @StreamBot.on_message(filters.channel & ~filters.group & (filters.document | filters.video | filters.photo)  & ~filters.forwarded, group=-1)
