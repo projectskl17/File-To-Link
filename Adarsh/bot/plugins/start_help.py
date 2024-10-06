@@ -105,8 +105,7 @@ Language: Python 3
     await message.reply_text(
     text=about_text,
     reply_markup=InlineKeyboardMarkup([
-        [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official")],
-        [InlineKeyboardButton("Owner", url="https://t.me/a_dithya_n")]
+        [InlineKeyboardButton("Support", url="https://t.me/hermitmd_official"), InlineKeyboardButton("Owner", url="https://t.me/a_dithya_n")],
     ])
     )
 
