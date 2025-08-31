@@ -63,30 +63,19 @@ class ByteStreamer:
         Generates the media session for the DC that contains the media file.
         This is required for getting the bytes from Telegram servers.
         """
-        from pyrogram.session.dns import DC_IPS  # ✅ Import DC mapping
 
         media_session = client.media_sessions.get(file_id.dc_id, None)
 
         if media_session is None:
-            server_address = DC_IPS[file_id.dc_id][0]  # ✅ Get IP/hostname for this DC
-
             if file_id.dc_id != await client.storage.dc_id():
-                auth = Auth(
-                    client=client,
-                    dc_id=file_id.dc_id,
-                    server_address=server_address,
-                    port=443,   # default Telegram port
-                    test_mode=await client.storage.test_mode(),
-                )
-                auth_key = await auth.create()
-
                 media_session = Session(
-                    client=client,
-                    dc_id=file_id.dc_id,
-                    auth_key=auth_key,
-                    test_mode=await client.storage.test_mode(),
+                    client,
+                    file_id.dc_id,
+                    await Auth(
+                        client, file_id.dc_id, await client.storage.test_mode()
+                    ).create(),
+                    await client.storage.test_mode(),
                     is_media=True,
-                    port=443,
                 )
                 await media_session.start()
 
@@ -112,21 +101,19 @@ class ByteStreamer:
                     raise AuthBytesInvalid
             else:
                 media_session = Session(
-                    client=client,
-                    dc_id=file_id.dc_id,
-                    auth_key=await client.storage.auth_key(),
-                    test_mode=await client.storage.test_mode(),
+                    client,
+                    file_id.dc_id,
+                    await client.storage.auth_key(),
+                    await client.storage.test_mode(),
                     is_media=True,
-                    port=443,
                 )
                 await media_session.start()
-
             logging.debug(f"Created media session for DC {file_id.dc_id}")
             client.media_sessions[file_id.dc_id] = media_session
         else:
             logging.debug(f"Using cached media session for DC {file_id.dc_id}")
-
         return media_session
+
 
     @staticmethod
     async def get_location(file_id: FileId) -> Union[raw.types.InputPhotoFileLocation,
