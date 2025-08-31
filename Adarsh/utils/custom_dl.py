@@ -69,13 +69,14 @@ class ByteStreamer:
         if media_session is None:
             if file_id.dc_id != await client.storage.dc_id():
                 media_session = Session(
-                    client,
-                    file_id.dc_id,
-                    await Auth(
+                    client=client,
+                    dc_id=file_id.dc_id,
+                    auth_key=await Auth(
                         client, file_id.dc_id, await client.storage.test_mode()
                     ).create(),
-                    await client.storage.test_mode(),
+                    test_mode=await client.storage.test_mode(),
                     is_media=True,
+                    port=443,  # 🔑 Required argument
                 )
                 await media_session.start()
 
@@ -101,11 +102,12 @@ class ByteStreamer:
                     raise AuthBytesInvalid
             else:
                 media_session = Session(
-                    client,
-                    file_id.dc_id,
-                    await client.storage.auth_key(),
-                    await client.storage.test_mode(),
+                    client=client,
+                    dc_id=file_id.dc_id,
+                    auth_key=await client.storage.auth_key(),
+                    test_mode=await client.storage.test_mode(),
                     is_media=True,
+                    port=443,  # 🔑 Required argument
                 )
                 await media_session.start()
             logging.debug(f"Created media session for DC {file_id.dc_id}")
@@ -113,7 +115,6 @@ class ByteStreamer:
         else:
             logging.debug(f"Using cached media session for DC {file_id.dc_id}")
         return media_session
-
 
     @staticmethod
     async def get_location(file_id: FileId) -> Union[raw.types.InputPhotoFileLocation,
