@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>%s</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.6.9/plyr.css" />
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -24,17 +24,14 @@
             margin-bottom: 2rem;
             border-radius: 5px;
         }
-
         #file-name {
             font-size: 1.5rem;
             font-weight: 700;
         }
-
         .container {
             background-color: #fff;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
         footer {
             margin-top: 2rem;
             text-align: center;
@@ -53,12 +50,12 @@
     <footer>
         <p><small>Video not playing? Your browser or the player might not support the codec. Please download to watch.</small></p>
     </footer>
-    <script src="https://cdn.plyr.io/3.6.9/plyr.js"></script>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
     <script>
         const controls = [
             'play-large', 'rewind', 'play', 'fast-forward', 'progress',
-            'current-time', 'duration', 'mute', 'volume', 'captions',
-            'settings', 'pip', 'airplay', 'download', 'fullscreen'
+            'current-time', 'duration', 'mute', 'captions',
+            'pip', 'airplay', 'download', 'fullscreen'
         ];
         document.addEventListener('DOMContentLoaded', () => {
             const player = Plyr.setup('.player', { controls });
