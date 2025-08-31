@@ -63,16 +63,20 @@ class ByteStreamer:
         Generates the media session for the DC that contains the media file.
         This is required for getting the bytes from Telegram servers.
         """
+        from pyrogram.session.dns import DC_IPS  # ✅ Import DC mapping
 
         media_session = client.media_sessions.get(file_id.dc_id, None)
 
         if media_session is None:
+            server_address = DC_IPS[file_id.dc_id][0]  # ✅ Get IP/hostname for this DC
+
             if file_id.dc_id != await client.storage.dc_id():
                 auth = Auth(
                     client=client,
                     dc_id=file_id.dc_id,
+                    server_address=server_address,
+                    port=443,   # default Telegram port
                     test_mode=await client.storage.test_mode(),
-                    port=443,   # 🔑 required
                 )
                 auth_key = await auth.create()
 
@@ -82,7 +86,7 @@ class ByteStreamer:
                     auth_key=auth_key,
                     test_mode=await client.storage.test_mode(),
                     is_media=True,
-                    port=443,   # 🔑 required
+                    port=443,
                 )
                 await media_session.start()
 
@@ -113,7 +117,7 @@ class ByteStreamer:
                     auth_key=await client.storage.auth_key(),
                     test_mode=await client.storage.test_mode(),
                     is_media=True,
-                    port=443,   # 🔑 required
+                    port=443,
                 )
                 await media_session.start()
 
