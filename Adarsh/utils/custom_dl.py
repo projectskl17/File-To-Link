@@ -68,15 +68,21 @@ class ByteStreamer:
 
         if media_session is None:
             if file_id.dc_id != await client.storage.dc_id():
+                auth = Auth(
+                    client=client,
+                    dc_id=file_id.dc_id,
+                    test_mode=await client.storage.test_mode(),
+                    port=443,   # 🔑 required
+                )
+                auth_key = await auth.create()
+
                 media_session = Session(
                     client=client,
                     dc_id=file_id.dc_id,
-                    auth_key=await Auth(
-                        client, file_id.dc_id, await client.storage.test_mode()
-                    ).create(),
+                    auth_key=auth_key,
                     test_mode=await client.storage.test_mode(),
                     is_media=True,
-                    port=443,  # 🔑 Required argument
+                    port=443,   # 🔑 required
                 )
                 await media_session.start()
 
@@ -107,13 +113,15 @@ class ByteStreamer:
                     auth_key=await client.storage.auth_key(),
                     test_mode=await client.storage.test_mode(),
                     is_media=True,
-                    port=443,  # 🔑 Required argument
+                    port=443,   # 🔑 required
                 )
                 await media_session.start()
+
             logging.debug(f"Created media session for DC {file_id.dc_id}")
             client.media_sessions[file_id.dc_id] = media_session
         else:
             logging.debug(f"Using cached media session for DC {file_id.dc_id}")
+
         return media_session
 
     @staticmethod
